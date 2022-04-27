@@ -1,15 +1,22 @@
 import Head from 'next/head'
+import { useState } from 'react'
 import Web3 from 'web3'
 import 'bulma/css/bulma.css'
 import styles from '../styles/VendingMachine.module.css'
 
 const VendingMachine = () => {
+    const [error,setError] = useState('')
     let web3
-    //window.ethereum
-    const connectWalletHandler = () => {
+
+    const connectWalletHandler = async () => {
         if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
-            window.ethereum.request({method: "eth_requestAccounts"})
-            web3  = new Web3(window.ethereum)
+            try {
+                await window.ethereum.request({method: "eth_requestAccounts"})
+                web3  = new Web3(window.ethereum)
+            } catch(err){
+                setError(err.message)
+            }
+            
         } else {
             //meta mast not installed
             console.log("Please install MetaMask")
@@ -35,6 +42,11 @@ const VendingMachine = () => {
             <section>
                 <div className="container">
                     <p>placeholder text</p>
+                </div>
+            </section>
+            <section>
+                <div className="container has-text-danger">
+                    <p>{error}</p>
                 </div>
             </section>
         </div>
